@@ -28,7 +28,7 @@ public class RestHelper {
 
     public Reddit getPosts()
     {
-        String url = "http://www.reddit.com/r/aww.json?limit=10";
+        String url = "http://www.reddit.com/r/aww.json?limit="10";
         return restTemplate.getForObject(url,Reddit.class);
     }
 }

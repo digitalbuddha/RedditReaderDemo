@@ -1,35 +1,50 @@
 apply plugin: 'android'
 
+
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.0"
-
+    buildToolsVersion '19.0.0'
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 19
         versionCode 1
         versionName "1.0"
     }
+    signingConfigs {
+        myConfig {
+            keyAlias 'android'
+            keyPassword 'android'
+            storeFile file('android.jks')
+            storePassword 'android'
+        }
+    }
     buildTypes {
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.myConfig
+            buildConfigField "String", "BASE_URL", "\"http://www.reddit.com/r/aww.json?limit=\""
+
         }
+        debug {
+            buildConfigField "String", "BASE_URL", "\"http://www.reddit.com/r/pics.json?limit=\""
+        }
+
     }
     //necessary for jackson to work correctly.
     packagingOptions {
-             exclude 'META-INF/ASL2.0'
-             exclude 'META-INF/LICENSE'
-             exclude 'META-INF/license.txt'
-             exclude 'META-INF/NOTICE'
-             exclude 'META-INF/notice.txt'
-         }
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/notice.txt'
+    }
+
 }
 
 dependencies {
     compile 'com.android.support:appcompat-v7:19.0.1'
     compile fileTree(dir: 'libs', include: ['*.jar'])
-
     //dependencies for rest client and jackson json to object mapper
     compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.3.0'
