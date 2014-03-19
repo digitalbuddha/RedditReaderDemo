@@ -1,22 +1,26 @@
 package com.example.redditreader;
 
-import java.util.Locale;
-
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.redditreader.helper.RestHelper;
+import com.example.redditreader.model.Reddit;
+
+import java.util.Locale;
 
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
@@ -35,11 +39,15 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
+    private RestHelper restHelper;
+    private Reddit reddit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        restHelper= RestHelper.getInstance();
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
@@ -184,5 +192,23 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             return rootView;
         }
     }
+
+     private class HttpRequestTask extends AsyncTask<Void, Void, Reddit> {
+             @Override
+             protected Reddit doInBackground(Void... params) {
+                 try {
+                   reddit= restHelper.getPosts();
+                 } catch (Exception e) {
+                     Log.e("MainActivity", e.getMessage(), e);
+                 }
+
+                 return null;
+             }
+
+             @Override
+             protected void onPostExecute(Reddit reddit) {
+
+             }
+         }
 
 }
