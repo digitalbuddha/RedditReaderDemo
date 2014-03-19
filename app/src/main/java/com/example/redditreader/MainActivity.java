@@ -15,10 +15,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.example.redditreader.helper.RestHelper;
+import com.example.redditreader.model.Data_;
 import com.example.redditreader.model.Reddit;
+
+import java.util.concurrent.ExecutionException;
 
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
@@ -38,15 +42,21 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
      */
     ViewPager mViewPager;
     private RestHelper restHelper;
-    private Reddit reddit;
+    private static Reddit reddit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        restHelper= RestHelper.getInstance();
-
+        restHelper = RestHelper.getInstance();
+        try {
+            new HttpRequestTask().execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -78,14 +88,15 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             actionBar.addTab(
                     actionBar.newTab()
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
-                            .setTabListener(this));
+                            .setTabListener(this)
+            );
         }
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -132,19 +143,19 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            return PlaceholderFragment.newInstance(position);
         }
 
         @Override
         public int getCount() {
             // Show 3 total pages.
-           return reddit.getData().getChildren().size();
+            return reddit.getData().getChildren().size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
 
-            return "Post "+position;
+            return "Post " + position;
         }
     }
 
@@ -175,30 +186,39 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+                                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            Data_ data = reddit.getData().getChildren().get(getArguments().getInt(ARG_SECTION_NUMBER)).getData();
+
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+            textView.setText(data.getTitle()+" ("+data.getScore()+" )");
+            WebView webView = (WebView) rootView.findViewById(R.id.webView);
+            String url = data.getUrl();
+            if (url.contains("http://imgur")) {
+                url = url.replace("http://imgur.com/", "http://i.imgur.com/");
+                url += ".jpg";
+            }
+            webView.loadUrl(url);
             return rootView;
         }
     }
 
-     private class HttpRequestTask extends AsyncTask<Void, Void, Reddit> {
-             @Override
-             protected Reddit doInBackground(Void... params) {
-                 try {
-                   reddit= restHelper.getPosts();
-                 } catch (Exception e) {
-                     Log.e("MainActivity", e.getMessage(), e);
-                 }
+    private class HttpRequestTask extends AsyncTask<Void, Void, Reddit> {
+        @Override
+        protected Reddit doInBackground(Void... params) {
+            try {
+                reddit = restHelper.getPosts();
+            } catch (Exception e) {
+                Log.e("MainActivity", e.getMessage(), e);
+            }
 
-                 return null;
-             }
+            return null;
+        }
 
-             @Override
-             protected void onPostExecute(Reddit reddit) {
+        @Override
+        protected void onPostExecute(Reddit reddit) {
 
-             }
-         }
+        }
+    }
 
 }
