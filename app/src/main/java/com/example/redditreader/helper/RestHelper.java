@@ -10,16 +10,20 @@ import org.springframework.web.client.RestTemplate;
  */
 public class RestHelper {
     private static RestHelper ourInstance = new RestHelper();
-    private final RestTemplate restTemplate;
+    private RestTemplate restTemplate;
 
     public static RestHelper getInstance() {
         return ourInstance;
     }
 
     private RestHelper() {
+        setupRestTemplate();
+
+    }
+
+    private void setupRestTemplate() {
         restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-
     }
 
     public Reddit getPosts()
