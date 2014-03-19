@@ -33,5 +33,5 @@ dependencies {
     //dependencies for rest client and jackson json to object mapper
     compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.3.0'
-
+    androidTestCompile 'com.jayway.android.robotium:robotium-solo:4.3'
 }
