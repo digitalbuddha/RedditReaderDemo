@@ -39,7 +39,19 @@ android {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/notice.txt'
     }
-
+    productFlavors {
+        Free {
+            versionCode 1
+            versionName '1'
+            buildConfigField "int", "NUMBER_OF_POSTS", "5"
+            packageName "com.redditreader.free"
+        }
+        Paid {
+            versionCode 2
+            buildConfigField "int", "NUMBER_OF_POSTS", "10"
+            packageName "com.gradledemo.paid"
+        }
+    }
 }
 
 dependencies {

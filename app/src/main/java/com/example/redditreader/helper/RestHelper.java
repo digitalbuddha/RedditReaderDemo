@@ -1,5 +1,6 @@
 package com.example.redditreader.helper;
 
+import com.example.redditreader.BuildConfig;
 import com.example.redditreader.model.Reddit;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -28,7 +29,7 @@ public class RestHelper {
 
     public Reddit getPosts()
     {
-        String url = "http://www.reddit.com/r/aww.json?limit="+10;
+        String url = BuildConfig.BASE_URL+ BuildConfig.NUMBER_OF_POSTS;
         return restTemplate.getForObject(url,Reddit.class);
     }
 }
