@@ -49,7 +49,7 @@ android {
         Paid {
             versionCode 2
             buildConfigField "int", "NUMBER_OF_POSTS", "10"
-            packageName "com.gradledemo.paid"
+            packageName "com.redditreader.paid"
         }
     }
 }
