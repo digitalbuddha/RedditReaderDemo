@@ -16,12 +16,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+    //necessary for jackson to work correctly.
+    packagingOptions {
+             exclude 'META-INF/ASL2.0'
+             exclude 'META-INF/LICENSE'
+             exclude 'META-INF/license.txt'
+             exclude 'META-INF/NOTICE'
+             exclude 'META-INF/notice.txt'
+         }
 }
 
 dependencies {
     compile 'com.android.support:appcompat-v7:19.0.1'
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
+    //dependencies for rest client and jackson json to object mapper
     compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.3.0'
 
