@@ -55,7 +55,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:19.0.1'
+    compile 'com.android.support:appcompat-v7:19.0.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     //dependencies for rest client and jackson json to object mapper
     compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
